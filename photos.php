@@ -166,8 +166,7 @@ try {
                 foreach( $response as $res) {
                     if($res->thumb_link) {
                         echo '<div class="img-w">
-                                    <img src='.$res->photo_link.'
-                                        alt="" />
+                                <img src='.$res->photo_link.' alt=""/>
                             </div>';
                     }
                 }
