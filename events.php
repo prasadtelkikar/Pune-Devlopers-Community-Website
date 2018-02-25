@@ -60,6 +60,7 @@ $obj = json_decode($json, true, 512, JSON_BIGINT_AS_STRING);
         <link href="assets/css/animate.css" rel="stylesheet">
         <!--Style Css-->
         <link href="assets/css/style.css" rel="stylesheet">
+        <link href="assets/css/events.css" rel="stylesheet">
         <link  href="assets/css/stylemy.css" rel="stylesheets">
         <!--Responsive Css-->
         <link href="assets/css/responsive.css" rel="stylesheet">
@@ -113,96 +114,17 @@ $obj = json_decode($json, true, 512, JSON_BIGINT_AS_STRING);
         </div>
     </nav><!--main menu end-->
 
-
-
-    <div class="eve container">
- 
-<!-- events will be here -->
-<?php
-
-echo "
-<table class='table table-hover table-responsive table-bordered'>";
- 
-    // count the number of events
-    $event_count = count($obj['data']);
-
-   // echo $event_count;
- 
-    for($x=0; $x<$event_count; $x++){
-        // facebook page events will be here
-        // set timezone
-        date_default_timezone_set($obj['data'][$x]['timezone']);
-
-        $start_date = date( 'l, F d, Y', strtotime($obj['data'][$x]['start_time']));
-        $start_time = date('g:i a', strtotime($obj['data'][$x]['start_time']));
-        
-        $pic_big = isset($obj['data'][$x]['cover']['source']) ? $obj['data'][$x]['cover']['source'] : "https://graph.facebook.com/v2.7/{$fb_page_id}/picture?type=large";
-
-        $eid = $obj['data'][$x]['id'];
-        $name = $obj['data'][$x]['name'];
-        $description = isset($obj['data'][$x]['description']) ? $obj['data'][$x]['description'] : "";
-
-        // place
-        $place_name = isset($obj['data'][$x]['place']['name']) ? $obj['data'][$x]['place']['name'] : "";
-        $city = isset($obj['data'][$x]['place']['location']['city']) ? $obj['data'][$x]['place']['location']['city'] : "";
-        $country = isset($obj['data'][$x]['place']['location']['country']) ? $obj['data'][$x]['place']['location']['country'] : "";
-        $zip = isset($obj['data'][$x]['place']['location']['zip']) ? $obj['data'][$x]['place']['location']['zip'] : "";
-
-        $location="";
-
-        if($place_name && $city && $country && $zip){
-        $location="{$place_name}, {$city}, {$country}, {$zip}";
-        }else{
-        $location="Location not set or event data is too old.";
-        }
-
-
-
-        echo "<tr>";
-        echo "<td rowspan='6' style='width:20em;'>";
-            echo "<img src='{$pic_big}' width='200px' />";
-        echo "</td>";
-    echo "</tr>";
-      
-    echo "<tr>";
-        echo "<td style='width:15em;'>What:</td>";
-        echo "<td><b>{$name}</b></td>";
-    echo "</tr>";
-      
-    echo "<tr>";
-        echo "<td>When:</td>";
-        echo "<td>{$start_date} at {$start_time}</td>";
-    echo "</tr>";
-      
-    echo "<tr>";
-        echo "<td>Where:</td>";
-        echo "<td>{$location}</td>";
-    echo "</tr>";
-      
-    echo "<tr>";
-        echo "<td>Description:</td>";
-        echo "<td>{$description}</td>";
-    echo "</tr>";
-      
-    echo "<tr>";
-        echo "<td>Facebook Link:</td>";
-        echo "<td>";
-            echo "<a href='https://www.facebook.com/events/{$eid}/' target='_blank'>View on Facebook</a>";
-        echo "</td>";
-    echo "</tr>";
-
-
-    }
-echo"</table>";
-
-?>
-
- 
+<div id="countdown">
+  <div id='tiles'></div>
+  <div class="labels">
+    <li>Days</li>
+    <li>Hours</li>
+    <li>Mins</li>
+    <li>Secs</li>
+  </div>
 </div>
 
-
-
-
+<br>
     <!--footer section start-->
     <footer class="footer-section section-padding padding-bottom-0 text-center">
            <div class="container">
@@ -240,7 +162,7 @@ echo"</table>";
         <!--jquery script load-->
         <script src="assets/js/jquery.js"></script>
          <!--Owl carousel script load-->
-		<script src="assets/js/owl.carousel.min.js"></script>
+    <script src="assets/js/owl.carousel.min.js"></script>
         <!--Bootstrap v3 script load here-->
         <script src="assets/js/bootstrap.min.js"></script>
         <!--Slick Nav Js File Load-->
@@ -249,6 +171,39 @@ echo"</table>";
         <script src="assets/js/wow.min.js"></script>
          <!--Main js file load-->
         <script src="assets/js/main.js"></script>
+        <script>
+        var target_date = new Date().getTime() + (1000*3600*48); // set the countdown date
+var days, hours, minutes, seconds; // variables for time units
+
+var countdown = document.getElementById("tiles"); // get tag element
+
+getCountdown();
+
+setInterval(function () { getCountdown(); }, 1000);
+
+function getCountdown(){
+
+  // find the amount of "seconds" between now and target
+  var current_date = new Date().getTime();
+  var seconds_left = (target_date - current_date) / 1000;
+
+  days = pad( parseInt(seconds_left / 86400) );
+  seconds_left = seconds_left % 86400;
+     
+  hours = pad( parseInt(seconds_left / 3600) );
+  seconds_left = seconds_left % 3600;
+      
+  minutes = pad( parseInt(seconds_left / 60) );
+  seconds = pad( parseInt( seconds_left % 60 ) );
+
+  // format countdown string + set tag value
+  countdown.innerHTML = "<span>" + days + "</span><span>" + hours + "</span><span>" + minutes + "</span><span>" + seconds + "</span>"; 
+}
+
+function pad(n) {
+  return (n < 10 ? '0' : '') + n;
+}
+        </script>
     </body>
 
 </html>
